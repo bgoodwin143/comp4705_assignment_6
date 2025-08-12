@@ -38,13 +38,11 @@ def main():
     log_df, train_df = load_data(LOG_FILE, TRAIN_DATA_FILE)
 
     if log_df.empty:
-        st.warning("No prediction log data found. Please send requests to the API.")
+        st.warning("No prediction log data!")
         return
 
     if train_df is None:
-        st.error(
-            f"Training data ('{TRAIN_DATA_FILE}') not found. Cannot perform drift analysis."
-        )
+        st.error(f"Training data ('{TRAIN_DATA_FILE}') not found.")
         return
 
     st.header("Model Performance Metrics")
@@ -52,14 +50,24 @@ def main():
         log_df["predicted_sentiment"] == log_df["true_sentiment"]
     ).sum()
     total_predictions = len(log_df)
-    accuracy = correct_predictions / total_predictions if total_predictions > 0 else 0
+
+    # Converted the long line into a readable if/else block
+    if total_predictions > 0:
+        accuracy = correct_predictions / total_predictions
+    else:
+        accuracy = 0
 
     if accuracy < 0.8 and total_predictions > 0:
+        # Broke this long f-string across multiple lines
         st.error(
-            f"ALERT: Model accuracy ({accuracy:.2%}) has fallen below the 80% threshold!"
+            f"ALERT: Model accuracy ({accuracy:.2%}) has fallen below the 80% "
+            "threshold!"
         )
     elif total_predictions > 0:
-        st.success(f"Model accuracy ({accuracy:.2%}) is above the 80% threshold.")
+        # Broke this long f-string across multiple lines
+        st.success(
+            f"Model accuracy ({accuracy:.2%}) is above the 80% threshold."
+        )
 
     true_positives = (
         (log_df["predicted_sentiment"] == "positive")
@@ -69,11 +77,13 @@ def main():
         (log_df["predicted_sentiment"] == "positive")
         & (log_df["true_sentiment"] == "negative")
     ).sum()
-    precision = (
-        true_positives / (true_positives + false_positives)
-        if (true_positives + false_positives) > 0
-        else 0
-    )
+
+    # Converted the long line into a readable if/else block
+    if (true_positives + false_positives) > 0:
+        precision = true_positives / (true_positives + false_positives)
+    else:
+        precision = 0
+
     col1, col2, col3 = st.columns(3)
     col1.metric("Total Predictions", f"{total_predictions}")
     col2.metric("Overall Accuracy", f"{accuracy:.2%}")
@@ -85,25 +95,37 @@ def main():
 
     with col1:
         st.header("Data Drift")
+        # Broke this long string across multiple lines
         st.write(
-            "Compares the distribution of sentence lengths between training and inference data."
+            "Compares the distribution of sentence lengths between "
+            "training and inference data."
         )
         train_lengths = train_df["review"].str.len()
         inference_lengths = log_df["request_text"].str.len()
         fig, ax = plt.subplots()
-        ax.hist(train_lengths, bins=50, density=True, alpha=0.7, label="Training")
-        ax.hist(inference_lengths, bins=50, density=True, alpha=0.7, label="Inference")
+        # Formatted these long function calls
+        ax.hist(
+            train_lengths, bins=50, density=True, alpha=0.7, label="Training"
+        )
+        ax.hist(
+            inference_lengths, bins=50, density=True, alpha=0.7, label="Infer"
+        )
         ax.set_xlabel("Sentence Length")
         ax.legend()
         st.pyplot(fig)
 
     with col2:
         st.header("Target Drift")
+        # Broke this long string across multiple lines
         st.write(
-            "Compares the distribution of predicted sentiments vs. sentiments in the training data."
+            "Compares the distribution of predicted sentiments vs. "
+            "sentiments in the training data."
         )
         train_dist = train_df["sentiment"].value_counts(normalize=True)
-        inference_dist = log_df["predicted_sentiment"].value_counts(normalize=True)
+        inference_dist = log_df["predicted_sentiment"].value_counts(
+            normalize=True
+        )
+        # Formatted this long DataFrame constructor
         drift_df = pd.DataFrame(
             {"Training": train_dist, "Inference": inference_dist}
         ).fillna(0)

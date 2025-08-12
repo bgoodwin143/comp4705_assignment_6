@@ -1,6 +1,5 @@
 """
 main.py
-@TODO: provide four distinct endpoints: health check, predict sentiment, predict with probability, get training example
 """
 
 import joblib
@@ -38,15 +37,13 @@ def startup_event():
     If not, it prints a persistent warning
     """
     if model is None:
-        print("WARNING: Model is not loaded. Prediction endpoints will not work")
+        print("WARNING: Model is not loaded.")
 
 
 @app.get("/health")
 def health_check():
     """
     Health Check Endpoint
-    This endpoint is used to verify that the API server is running and responsive.
-    It's a common practice for monitoring services
     """
     return {"Status": "ok", "message": "API is running"}
 
@@ -58,7 +55,7 @@ LOG_FILE = "/logs/prediction_logs.json"
 def predict(input_data: PredictionInput):
     """
     Prediction Endpoint
-    Takes a movie review and returns a binary prediction negative or positive.
+    prediction negative or positive.
     """
     if model is None:
         raise HTTPException(
@@ -85,7 +82,6 @@ def predict(input_data: PredictionInput):
 def predict_with_probability(input_data: PredictionInput):
     """
     Prediction with Probability Endpoint
-    Takes a review and returns the prediction along with the probability for the predicted class
     """
     if model is None:
         raise HTTPException(
@@ -108,13 +104,16 @@ def predict_with_probability(input_data: PredictionInput):
     else:
         class_probability = prediction_probabilties[0][1]
 
-    return {"sentiment": (prediction[0]), "probability": round(class_probability, 4)}
+    return {
+        "sentiment": prediction[0],
+        "probability": round(class_probability, 4),
+    }
 
 
 @app.get("/example")
 def get_training_example():
     """
-    Randomly gets a single IMDB review from the dataset and returns that review
+    Randomly gets a single IMDB review
     """
     reviews = pd.read_csv("IMDB_Dataset.csv")
     random_row = reviews.sample(n=1)
