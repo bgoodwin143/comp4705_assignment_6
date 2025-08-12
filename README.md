@@ -24,7 +24,7 @@ To run this project locally, you must have Docker installed.
 
 1.  **Clone the Repository**:
     ```bash
-    git clone https://git.cs.du.edu/bengoodw/comp4705_assignment_6.git
+    git clone https://github.com/bgoodwin143/comp4705_assignment_6
     cd comp4705_assignment_6
     ```
 
