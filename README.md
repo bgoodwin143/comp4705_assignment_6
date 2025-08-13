@@ -24,7 +24,7 @@ To run this project locally, you must have Docker installed.
 
 1.  **Clone the Repository**:
     ```bash
-    git clone https://github.com/bgoodwin143/comp4705_assignment_6
+    git clone -b dev https://github.com/bgoodwin143/comp4705_assignment_6.git
     cd comp4705_assignment_6
     ```
 
@@ -100,3 +100,7 @@ This is a detailed guide to deploy the project from scratch on AWS.
     docker run -d --name dashboard_container -p 8501:8501 -v prediction_logs_volume:/logs streamlit-monitoring-dashboard
     ```
 *   The deployment is complete and accessible at your instance's public IP on ports 8000 and 8501.
+
+### 5. Testing, to populate a review input the following into the terminal connected to EC2
+curl -X POST "http://localhost:8000/predict"      -H "Content-Type: application/json"      -d '{"text": "This movie was the worst", "true_sentiment": "negative"}'
+{"sentiment":"negative"}
